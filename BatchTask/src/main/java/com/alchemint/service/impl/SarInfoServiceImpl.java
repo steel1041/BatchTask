@@ -19,17 +19,13 @@ import org.web3j.crypto.WalletUtils;
 import org.web3j.protocol.admin.Admin;
 import org.web3j.protocol.core.DefaultBlockParameter;
 import org.web3j.protocol.core.DefaultBlockParameterName;
-import org.web3j.protocol.core.Request;
-import org.web3j.protocol.core.methods.response.EthBlock;
-import org.web3j.protocol.core.methods.response.EthBlockNumber;
 import org.web3j.protocol.core.methods.response.Log;
 import org.web3j.protocol.http.HttpService;
 import org.web3j.tx.gas.DefaultGasProvider;
+import org.web3j.utils.Convert;
 
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.Date;
 import java.util.function.Consumer;
 
 /**
@@ -37,20 +33,15 @@ import java.util.function.Consumer;
  * @author steel
  */
 @Service
-public class SarInfoServiceImpl implements SarInfoServiceI {
+public class SarInfoServiceImpl extends BaseServiceImpl implements SarInfoServiceI {
 
     public final static Logger logger = LoggerFactory.getLogger(SarInfoServiceImpl.class);
 
     @Autowired
-    OperationDaoI operationDaoI;
+    private OperationDaoI operationDaoI;
 
     @Autowired
-    SarInfoDaoI sarInfoDaoI;
-
-    @Override
-    public void saveOperation(Log log, Operation operation) {
-        operationDaoI.saveOperation(operation);
-    }
+    private SarInfoDaoI sarInfoDaoI;
 
     /**
      * 开始执行sar合约事件
@@ -83,7 +74,7 @@ public class SarInfoServiceImpl implements SarInfoServiceI {
                     oper.setAddr(from);
                     oper.setAsset(Scenario.SAR_CONTRACT_ADDRESS);
                     oper.setType(type);
-                    oper.setValue(new BigDecimal(value));
+                    oper.setValue(Convert.fromWei(value.toString(), Convert.Unit.ETHER));
                     oper.setBlockindex(log.getBlockNumber().longValue());
                     oper.setTxid(log.getTransactionHash());
                     if(type == Constans.OPER_TYPE_OPEN) {
@@ -116,23 +107,5 @@ public class SarInfoServiceImpl implements SarInfoServiceI {
         }catch (Exception e){
             e.printStackTrace();
         }
-    }
-
-    private BigInteger getLatestBlock(Admin web3j) throws Exception{
-        Request<?, EthBlockNumber> blockNumberRequest = web3j.ethBlockNumber();
-        BigInteger blockNumber = blockNumberRequest.send().getBlockNumber();
-        logger.info("BlockNumber:"+blockNumber.toString());
-        return blockNumber;
-    }
-
-    private Date getDateFromHash(Admin web3j,String blockHash) {
-        try {
-            Request<?, EthBlock> ethBlockRequest = web3j.ethGetBlockByHash(blockHash, true);
-            EthBlock.Block block = ethBlockRequest.send().getBlock();
-            return new Date(block.getTimestamp().longValue() * 1000);
-        }catch (Exception e){
-            logger.error(e.getMessage());
-        }
-        return new Date();
     }
 }

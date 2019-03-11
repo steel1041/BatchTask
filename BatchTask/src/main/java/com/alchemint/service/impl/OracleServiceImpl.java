@@ -1,12 +1,9 @@
 package com.alchemint.service.impl;
 
 import com.alchemint.bo.OracleOperation;
-
 import com.alchemint.constants.Scenario;
 import com.alchemint.contract.Oracle;
-
 import com.alchemint.dao.OracleOperationDaoI;
-import com.alchemint.dao.SarInfoDaoI;
 import com.alchemint.service.OracleServiceI;
 import io.reactivex.Flowable;
 import org.slf4j.Logger;
@@ -19,9 +16,6 @@ import org.web3j.crypto.WalletUtils;
 import org.web3j.protocol.admin.Admin;
 import org.web3j.protocol.core.DefaultBlockParameter;
 import org.web3j.protocol.core.DefaultBlockParameterName;
-import org.web3j.protocol.core.Request;
-import org.web3j.protocol.core.methods.response.EthBlock;
-import org.web3j.protocol.core.methods.response.EthBlockNumber;
 import org.web3j.protocol.core.methods.response.Log;
 import org.web3j.protocol.http.HttpService;
 import org.web3j.tx.gas.DefaultGasProvider;
@@ -29,7 +23,6 @@ import org.web3j.tx.gas.DefaultGasProvider;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.Date;
 import java.util.function.Consumer;
 
 /**
@@ -37,15 +30,13 @@ import java.util.function.Consumer;
  * @author steel
  */
 @Service
-public class OracleServiceImpl implements OracleServiceI {
+public class OracleServiceImpl extends BaseServiceImpl implements OracleServiceI {
 
     public final static Logger logger = LoggerFactory.getLogger(OracleServiceImpl.class);
 
     @Autowired
-    OracleOperationDaoI operationDaoI;
+    private OracleOperationDaoI operationDaoI;
 
-    @Autowired
-    SarInfoDaoI sarInfoDaoI;
 
     /**
      * 开始执行oracle合约事件
@@ -97,23 +88,5 @@ public class OracleServiceImpl implements OracleServiceI {
         }catch (Exception e){
             e.printStackTrace();
         }
-    }
-
-    private BigInteger getLatestBlock(Admin web3j) throws Exception{
-        Request<?, EthBlockNumber> blockNumberRequest = web3j.ethBlockNumber();
-        BigInteger blockNumber = blockNumberRequest.send().getBlockNumber();
-        logger.info("BlockNumber:"+blockNumber.toString());
-        return blockNumber;
-    }
-
-    private Date getDateFromHash(Admin web3j,String blockHash) {
-        try {
-            Request<?, EthBlock> ethBlockRequest = web3j.ethGetBlockByHash(blockHash, true);
-            EthBlock.Block block = ethBlockRequest.send().getBlock();
-            return new Date(block.getTimestamp().longValue() * 1000);
-        }catch (Exception e){
-            logger.error(e.getMessage());
-        }
-        return new Date();
     }
 }

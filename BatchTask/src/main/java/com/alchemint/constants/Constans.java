@@ -17,4 +17,8 @@ public final class Constans {
 
     public static final Integer SAR_STATUS_NORMAL = 1;
 
+    public static final String SETH_EVENT_DEPOSIT = "deposit";
+    public static final String SETH_EVENT_WITHDRAW = "withdraw";
+    public static final String SDUSD_EVENT_MINT = "mint";
+    public static final String SDUSD_EVENT_BURN = "burn";
 }

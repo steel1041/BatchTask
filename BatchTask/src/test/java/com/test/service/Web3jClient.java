@@ -1,9 +1,6 @@
 package com.test.service;
 
-import ch.qos.logback.core.util.TimeUtil;
-import io.reactivex.Flowable;
 import org.apache.commons.lang.time.DateFormatUtils;
-import org.apache.commons.lang.time.DateUtils;
 import org.junit.Test;
 import org.web3j.abi.EventEncoder;
 import org.web3j.abi.TypeReference;
@@ -30,7 +27,6 @@ import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.Consumer;
 
 /**
  * Created by cheng on 2019/2/26.
@@ -89,13 +85,13 @@ public class Web3jClient extends  Scenario {
             logger.info(DateFormatUtils.format(block.getTimestamp().longValue()*1000,"yyyy-MM-dd'T'HH:mm:ssZZ"));
 
 
-            Flowable<Transaction> pengdings =  web3j.pendingTransactionFlowable();
-            pengdings.blockingIterable().forEach(new Consumer<Transaction>() {
-                @Override
-                public void accept(Transaction transaction) {
-                    logger.info(transaction.toString());
-                }
-            });
+//            Flowable<Transaction> pengdings =  web3j.pendingTransactionFlowable();
+//            pengdings.blockingIterable().forEach(new Consumer<Transaction>() {
+//                @Override
+//                public void accept(Transaction transaction) {
+//                    logger.info(transaction.toString());
+//                }
+//            });
         }catch (IOException e){
             logger.error(e.getMessage());
         }
@@ -148,10 +144,7 @@ public class Web3jClient extends  Scenario {
     @Test
     public void transfer() {
         try {
-            String passwd = "123456";
-            //String sourceFile = "D:\\walletfile\\keystore\\801b653ba6e0292bafc975601d5329b59a375be6";
-            String toAddress  = "0xd387876101f8c2362b430a5df597b2d7219d05c9";
-            //Credentials credentials = WalletUtils.loadCredentials(passwd,sourceFile);
+            String toAddress  = "0xedebf882b0aef2c32a65e71e62a05da354d324b9";
             unlockAccount();
             TransactionReceipt transactionReceipt = Transfer.sendFunds(
                     web3j,ALICE,toAddress,

@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
+	http://www.springframework.org/schema/context
+	http://www.springframework.org/schema/context/spring-context-4.2.xsd
+
+
+
+
+	http://www.springframework.org/schema/mvc
+    http://www.springframework.org/schema/mvc/spring-mvc-4.2.xsd">
+
+    <context:component-scan base-package="com.alchemint.controller"/>
+    <context:annotation-config />
+    <!-- 默认注解映射的支持 -->
+    <mvc:annotation-driven />
+
+    <!-- 完成请求和pojo的注解 -->
+    <bean id="stringConverter" class="org.springframework.http.converter.StringHttpMessageConverter">
+        <property name="supportedMediaTypes">
+            <list>
+                <value>text/plain;charset=UTF-8</value>
+                <value>application/json;charset=UTF-8</value>
+            </list>
+        </property>
+    </bean>
+
+    <!-- 输出对象转JSON支持 -->
+    <!--<bean id="jsonConverter"-->
+          <!--class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">-->
+        <!--<property name="supportedMediaTypes">-->
+            <!--<list>-->
+                <!--<value>application/json;charset=UTF-8</value>-->
+            <!--</list>-->
+        <!--</property>-->
+    <!--</bean>-->
+    <!--<bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">-->
+        <!--<property name="messageConverters">-->
+            <!--<list>-->
+                <!--<ref bean="stringConverter"/>-->
+                <!--<ref bean="jsonConverter" />-->
+            <!--</list>-->
+        <!--</property>-->
+    <!--</bean>-->
+    
+	<!--<bean id="freemarkerConfig"-->
+        <!--class="org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer">-->
+        <!--<property name="templateLoaderPath" >-->
+	            <!--<value>/WEB-INF/html_default/</value>-->
+        <!--</property>   -->
+        <!--<property name="freemarkerSettings">-->
+            <!--<props>-->
+                <!--<prop key="template_update_delay">0</prop>-->
+                <!--<prop key="default_encoding">UTF-8</prop>-->
+                <!--<prop key="number_format">0.###</prop>-->
+                <!--<prop key="datetime_format">yyyy-MM-dd HH:mm:ss</prop>-->
+                <!--<prop key="classic_compatible">true</prop>-->
+                <!--<prop key="template_exception_handler">ignore</prop>-->
+            <!--</props>-->
+        <!--</property>-->
+    <!--</bean> -->
+
+    <!---->
+   <!--&lt;!&ndash; Freemarker视图解析器 &ndash;&gt;  -->
+    <!--<bean id="viewResolver"-->
+        <!--class="org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver">-->
+        <!--<property name="cache" value="true" />        -->
+        <!--<property name="suffix" value=".html" />-->
+        <!--<property name="contentType" value="text/html;charset=UTF-8"></property>-->
+        <!--<property name="requestContextAttribute" value="request" />-->
+        <!--<property name="exposeSpringMacroHelpers" value="true" />-->
+         <!--&lt;!&ndash; 请求和会话属性都被复制到模板的属性集中，可以使用FreeMarker的表达式语言来访问并显示 &ndash;&gt;  -->
+        <!--<property name="exposeRequestAttributes" value="true" />-->
+        <!--<property name="exposeSessionAttributes" value="true" />-->
+  <!--</bean>  -->
+
+    <!--<bean id="fmXmlEscape" class="freemarker.template.utility.XmlEscape"/>-->
+    <!--<bean id="fmHtmlEscape" class="freemarker.template.utility.HtmlEscape"/>-->
+
+
+
+    <!--&lt;!&ndash; 上传文件拦截，设置最大上传文件大小 10M=10*1024*1024(B)=10485760 bytes &ndash;&gt;-->
+    <!--<bean id="multipartResolver"-->
+          <!--class="org.springframework.web.multipart.commons.CommonsMultipartResolver">-->
+        <!--<property name="maxUploadSize" value="10485760"/>-->
+    <!--</bean>-->
+</beans>
