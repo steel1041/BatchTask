@@ -4,7 +4,7 @@ import com.alchemint.bo.CommOperation;
 import com.alchemint.constants.Constans;
 import com.alchemint.constants.Scenario;
 import com.alchemint.contract.SDUSDToken;
-import com.alchemint.contract.SETHToken;
+import com.alchemint.contract.SETH;
 import com.alchemint.dao.CommOperationDaoI;
 import com.alchemint.dao.TransferDaoI;
 import com.alchemint.service.SethServiceI;
@@ -57,18 +57,18 @@ public class SethServiceImpl extends BaseServiceImpl implements SethServiceI {
         try {
             Admin web3j = Admin.build(new HttpService(Scenario.RPC));
             logger.info("web3j:"+web3j.toString());
-            Credentials ALICE = WalletUtils.loadCredentials(Scenario.WALLET_PASSWORD, Scenario.ALICE_KEY);
+            Credentials ALICE = WalletUtils.loadCredentials(Scenario.WALLET_PASSWORD, ALICE_KEY);
 
             logger.info("ALICE:"+ALICE.toString());
-            SETHToken sethToken = SETHToken.load(Scenario.SETH_CONTRACT_ADDRESS, web3j, ALICE, new DefaultGasProvider());
+            SETH seth = SETH.load(Scenario.SETH_CONTRACT_ADDRESS, web3j, ALICE, new DefaultGasProvider());
 
-            Flowable<SETHToken.DepositEventResponse> flowable = sethToken.depositEventFlowable(
+            Flowable<SETH.DepositEventResponse> flowable = seth.depositEventFlowable(
                     DefaultBlockParameter.valueOf(getLatestBlock(web3j).subtract(new BigInteger("100"))),
                     DefaultBlockParameterName.LATEST);
 
-            flowable.blockingIterable().forEach(new Consumer<SETHToken.DepositEventResponse>() {
+            flowable.blockingIterable().forEach(new Consumer<SETH.DepositEventResponse>() {
                 @Override
-                public void accept(SETHToken.DepositEventResponse event) {
+                public void accept(SETH.DepositEventResponse event) {
                     Log log = event.log;
                     String from = event.dst;
                     BigInteger value = event.wad;
@@ -107,18 +107,18 @@ public class SethServiceImpl extends BaseServiceImpl implements SethServiceI {
         try {
             Admin web3j = Admin.build(new HttpService(Scenario.RPC));
             logger.info("web3j:"+web3j.toString());
-            Credentials ALICE = WalletUtils.loadCredentials(Scenario.WALLET_PASSWORD, Scenario.ALICE_KEY);
+            Credentials ALICE = WalletUtils.loadCredentials(Scenario.WALLET_PASSWORD, ALICE_KEY);
 
             logger.info("ALICE:"+ALICE.toString());
-            SETHToken sethToken = SETHToken.load(Scenario.SETH_CONTRACT_ADDRESS, web3j, ALICE, new DefaultGasProvider());
+            SETH seth = SETH.load(Scenario.SETH_CONTRACT_ADDRESS, web3j, ALICE, new DefaultGasProvider());
 
-            Flowable<SETHToken.WithdrawalEventResponse> flowable = sethToken.withdrawalEventFlowable(
+            Flowable<SETH.WithdrawalEventResponse> flowable = seth.withdrawalEventFlowable(
                     DefaultBlockParameter.valueOf(getLatestBlock(web3j).subtract(new BigInteger("100"))),
                     DefaultBlockParameterName.LATEST);
 
-            flowable.blockingIterable().forEach(new Consumer<SETHToken.WithdrawalEventResponse>() {
+            flowable.blockingIterable().forEach(new Consumer<SETH.WithdrawalEventResponse>() {
                 @Override
-                public void accept(SETHToken.WithdrawalEventResponse event) {
+                public void accept(SETH.WithdrawalEventResponse event) {
                     Log log = event.log;
                     String from = event.src;
                     BigInteger value = event.wad;
@@ -157,7 +157,7 @@ public class SethServiceImpl extends BaseServiceImpl implements SethServiceI {
         try {
             Admin web3j = Admin.build(new HttpService(Scenario.RPC));
             logger.info("web3j:"+web3j.toString());
-            Credentials ALICE = WalletUtils.loadCredentials(Scenario.WALLET_PASSWORD, Scenario.ALICE_KEY);
+            Credentials ALICE = WalletUtils.loadCredentials(Scenario.WALLET_PASSWORD, ALICE_KEY);
 
             logger.info("ALICE:"+ALICE.toString());
             SDUSDToken sdusdToken = SDUSDToken.load(Scenario.SDUSD_CONTRACT_ADDRESS, web3j, ALICE, new DefaultGasProvider());
@@ -205,7 +205,7 @@ public class SethServiceImpl extends BaseServiceImpl implements SethServiceI {
         try {
             Admin web3j = Admin.build(new HttpService(Scenario.RPC));
             logger.info("web3j:"+web3j.toString());
-            Credentials ALICE = WalletUtils.loadCredentials(Scenario.WALLET_PASSWORD, Scenario.ALICE_KEY);
+            Credentials ALICE = WalletUtils.loadCredentials(Scenario.WALLET_PASSWORD, ALICE_KEY);
 
             logger.info("ALICE:"+ALICE.toString());
             SDUSDToken sdusdToken = SDUSDToken.load(Scenario.SDUSD_CONTRACT_ADDRESS, web3j, ALICE, new DefaultGasProvider());

@@ -3,8 +3,8 @@ package com.alchemint.service.impl;
 import com.alchemint.bo.Approval;
 import com.alchemint.bo.Transfer;
 import com.alchemint.constants.Scenario;
-import com.alchemint.contract.SDUSDToken;
-import com.alchemint.contract.SETHToken;
+import com.alchemint.contract.SDUSD;
+import com.alchemint.contract.SETH;
 import com.alchemint.dao.ApprovalDaoI;
 import com.alchemint.dao.TransferDaoI;
 import com.alchemint.service.TransferServiceI;
@@ -25,7 +25,6 @@ import org.web3j.tx.gas.DefaultGasProvider;
 import org.web3j.utils.Convert;
 
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.function.Consumer;
 
@@ -55,18 +54,18 @@ public class TransferServiceImpl extends BaseServiceImpl implements TransferServ
         try {
             Admin web3j = Admin.build(new HttpService(Scenario.RPC));
             logger.info("web3j:"+web3j.toString());
-            Credentials ALICE = WalletUtils.loadCredentials(Scenario.WALLET_PASSWORD, Scenario.ALICE_KEY);
+            Credentials ALICE = WalletUtils.loadCredentials(Scenario.WALLET_PASSWORD, ALICE_KEY);
 
             logger.info("ALICE:"+ALICE.toString());
-            SETHToken sethToken = SETHToken.load(Scenario.SETH_CONTRACT_ADDRESS, web3j, ALICE, new DefaultGasProvider());
+            SETH seth = SETH.load(Scenario.SETH_CONTRACT_ADDRESS, web3j, ALICE, new DefaultGasProvider());
 
-            Flowable<SETHToken.TransferEventResponse> flowable = sethToken.transferEventFlowable(
+            Flowable<SETH.TransferEventResponse> flowable = seth.transferEventFlowable(
                     DefaultBlockParameter.valueOf(getLatestBlock(web3j).subtract(new BigInteger("100"))),
                     DefaultBlockParameterName.LATEST);
 
-            flowable.blockingIterable().forEach(new Consumer<SETHToken.TransferEventResponse>() {
+            flowable.blockingIterable().forEach(new Consumer<SETH.TransferEventResponse>() {
                 @Override
-                public void accept(SETHToken.TransferEventResponse event) {
+                public void accept(SETH.TransferEventResponse event) {
                     Log log = event.log;
                     String from = event.src;
                     String to = event.dst;
@@ -75,7 +74,7 @@ public class TransferServiceImpl extends BaseServiceImpl implements TransferServ
                     tran.setFrom(from);
                     tran.setTo(to);
                     tran.setAsset(Scenario.SETH_CONTRACT_ADDRESS);
-                    tran.setValue(new BigDecimal(value));
+                    tran.setValue(Convert.fromWei(value.toString(), Convert.Unit.ETHER));
                     tran.setBlockindex(log.getBlockNumber().longValue());
                     tran.setTxid(log.getTransactionHash());
                     tran.setN(log.getTransactionIndex().intValue());
@@ -107,18 +106,18 @@ public class TransferServiceImpl extends BaseServiceImpl implements TransferServ
         try {
             Admin web3j = Admin.build(new HttpService(Scenario.RPC));
             logger.info("web3j:"+web3j.toString());
-            Credentials ALICE = WalletUtils.loadCredentials(Scenario.WALLET_PASSWORD, Scenario.ALICE_KEY);
+            Credentials ALICE = WalletUtils.loadCredentials(Scenario.WALLET_PASSWORD, ALICE_KEY);
 
             logger.info("ALICE:"+ALICE.toString());
-            SDUSDToken sdusd = SDUSDToken.load(Scenario.SDUSD_CONTRACT_ADDRESS, web3j, ALICE, new DefaultGasProvider());
+            SDUSD sdusd = SDUSD.load(Scenario.SDUSD_CONTRACT_ADDRESS, web3j, ALICE, new DefaultGasProvider());
 
-            Flowable<SDUSDToken.TransferEventResponse> flowable = sdusd.transferEventFlowable(
+            Flowable<SDUSD.TransferEventResponse> flowable = sdusd.transferEventFlowable(
                     DefaultBlockParameter.valueOf(getLatestBlock(web3j).subtract(new BigInteger("100"))),
                     DefaultBlockParameterName.LATEST);
 
-            flowable.blockingIterable().forEach(new Consumer<SDUSDToken.TransferEventResponse>() {
+            flowable.blockingIterable().forEach(new Consumer<SDUSD.TransferEventResponse>() {
                 @Override
-                public void accept(SDUSDToken.TransferEventResponse event) {
+                public void accept(SDUSD.TransferEventResponse event) {
                     Log log = event.log;
                     String from = event.src;
                     String to = event.dst;
@@ -159,18 +158,18 @@ public class TransferServiceImpl extends BaseServiceImpl implements TransferServ
         try {
             Admin web3j = Admin.build(new HttpService(Scenario.RPC));
             logger.info("web3j:"+web3j.toString());
-            Credentials ALICE = WalletUtils.loadCredentials(Scenario.WALLET_PASSWORD, Scenario.ALICE_KEY);
+            Credentials ALICE = WalletUtils.loadCredentials(Scenario.WALLET_PASSWORD, ALICE_KEY);
 
             logger.info("ALICE:"+ALICE.toString());
-            SETHToken sethToken = SETHToken.load(Scenario.SETH_CONTRACT_ADDRESS, web3j, ALICE, new DefaultGasProvider());
+            SETH seth = SETH.load(Scenario.SETH_CONTRACT_ADDRESS, web3j, ALICE, new DefaultGasProvider());
 
-            Flowable<SETHToken.ApprovalEventResponse> flowable = sethToken.approvalEventFlowable(
+            Flowable<SETH.ApprovalEventResponse> flowable = seth.approvalEventFlowable(
                     DefaultBlockParameter.valueOf(getLatestBlock(web3j).subtract(new BigInteger("100"))),
                     DefaultBlockParameterName.LATEST);
 
-            flowable.blockingIterable().forEach(new Consumer<SETHToken.ApprovalEventResponse>() {
+            flowable.blockingIterable().forEach(new Consumer<SETH.ApprovalEventResponse>() {
                 @Override
-                public void accept(SETHToken.ApprovalEventResponse event) {
+                public void accept(SETH.ApprovalEventResponse event) {
                     Log log = event.log;
                     String from = event.src;
                     String to = event.guy;
@@ -211,18 +210,18 @@ public class TransferServiceImpl extends BaseServiceImpl implements TransferServ
         try {
             Admin web3j = Admin.build(new HttpService(Scenario.RPC));
             logger.info("web3j:"+web3j.toString());
-            Credentials ALICE = WalletUtils.loadCredentials(Scenario.WALLET_PASSWORD, Scenario.ALICE_KEY);
+            Credentials ALICE = WalletUtils.loadCredentials(Scenario.WALLET_PASSWORD, ALICE_KEY);
 
             logger.info("ALICE:"+ALICE.toString());
-            SDUSDToken sdusdToken = SDUSDToken.load(Scenario.SDUSD_CONTRACT_ADDRESS, web3j, ALICE, new DefaultGasProvider());
+            SDUSD sdusdToken = SDUSD.load(Scenario.SDUSD_CONTRACT_ADDRESS, web3j, ALICE, new DefaultGasProvider());
 
-            Flowable<SDUSDToken.ApprovalEventResponse> flowable = sdusdToken.approvalEventFlowable(
+            Flowable<SDUSD.ApprovalEventResponse> flowable = sdusdToken.approvalEventFlowable(
                     DefaultBlockParameter.valueOf(getLatestBlock(web3j).subtract(new BigInteger("100"))),
                     DefaultBlockParameterName.LATEST);
 
-            flowable.blockingIterable().forEach(new Consumer<SDUSDToken.ApprovalEventResponse>() {
+            flowable.blockingIterable().forEach(new Consumer<SDUSD.ApprovalEventResponse>() {
                 @Override
-                public void accept(SDUSDToken.ApprovalEventResponse event) {
+                public void accept(SDUSD.ApprovalEventResponse event) {
                     Log log = event.log;
                     String from = event.src;
                     String to = event.guy;

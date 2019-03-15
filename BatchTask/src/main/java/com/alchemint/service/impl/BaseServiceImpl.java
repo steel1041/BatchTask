@@ -2,6 +2,7 @@ package com.alchemint.service.impl;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.web3j.protocol.admin.Admin;
 import org.web3j.protocol.core.Request;
 import org.web3j.protocol.core.methods.response.EthBlock;
@@ -17,6 +18,9 @@ import java.util.Date;
 public abstract class BaseServiceImpl  {
 
     public final static Logger logger = LoggerFactory.getLogger(BaseServiceImpl.class);
+
+    @Value("${alchemint.wallet.path.alice}")
+    public String ALICE_KEY = "";
 
     public BigInteger getLatestBlock(Admin web3j) throws Exception{
         Request<?, EthBlockNumber> blockNumberRequest = web3j.ethBlockNumber();

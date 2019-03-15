@@ -1,26 +1,13 @@
 package com.test.service;
 
 import com.alchemint.contract.SDUSDToken;
-import com.alchemint.contract.SETHToken;
 import org.junit.Test;
-import org.web3j.crypto.RawTransaction;
-import org.web3j.crypto.TransactionEncoder;
-import org.web3j.protocol.core.DefaultBlockParameter;
-import org.web3j.protocol.core.DefaultBlockParameterName;
 import org.web3j.protocol.core.RemoteCall;
-import org.web3j.protocol.core.Request;
-import org.web3j.protocol.core.methods.response.*;
-import org.web3j.tx.Transfer;
+import org.web3j.protocol.core.methods.response.TransactionReceipt;
 import org.web3j.tx.gas.DefaultGasProvider;
 import org.web3j.utils.Convert;
-import org.web3j.utils.Numeric;
 
-import java.math.BigDecimal;
 import java.math.BigInteger;
-
-import static junit.framework.TestCase.assertFalse;
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
 
 /**
  * Created by cheng on 2019/3/1.

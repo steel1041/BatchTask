@@ -48,13 +48,13 @@ public class Scenario extends BaseTest{
 
     static final String CONTRACT_ADDRESS = "0x793367ccf4B27C8c05565dd6a6ddFd4D4619b1ac";
 
-    static final String ORACLE_CONTRACT_ADDRESS = "0x494974957327750d6dbace49e93ac9b4ffae6d3a";
+    static final String ORACLE_CONTRACT_ADDRESS = "0x1ca7ce64a84dd27bbe31f2021e95efa684603444";
 
-    static final String SETH_CONTRACT_ADDRESS = "0xcf4a16b3d00d60105263d79ebe702e4b64074edf";
+    static final String SETH_CONTRACT_ADDRESS = "0x916b96d20ace37d4ff57f552843f35f61b84e775";
 
-    static final String SDUSD_CONTRACT_ADDRESS = "0x5fd327e5d9604ca6e3e5f085aa3bc6788ac89333";
+    static final String SDUSD_CONTRACT_ADDRESS = "0xc805c020502129c6047fc09cc97d75cda1e0d3fa";
 
-    static final String SAR_CONTRACT_ADDRESS = "0x68d9380cbe3e3a48ea9f1e0da53844b686389c8f";
+    static final String SAR_CONTRACT_ADDRESS = "0x62273e9ec0da1dd04c882eacb05694a1d9b3aef3";
 
     private static String ALICE_KEY = "D:\\walletfile\\keystore\\801b653ba6e0292bafc975601d5329b59a375be6";
 

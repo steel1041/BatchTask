@@ -1,11 +1,13 @@
 package com.alchemint.service.impl;
 
 import com.alchemint.bo.Operation;
+import com.alchemint.bo.OperationFee;
 import com.alchemint.bo.SarInfo;
 import com.alchemint.constants.Constans;
 import com.alchemint.constants.Scenario;
-import com.alchemint.contract.SarTub;
+import com.alchemint.contract.SAR;
 import com.alchemint.dao.OperationDaoI;
+import com.alchemint.dao.OperationFeeDaoI;
 import com.alchemint.dao.SarInfoDaoI;
 import com.alchemint.service.SarInfoServiceI;
 import io.reactivex.Flowable;
@@ -41,6 +43,9 @@ public class SarInfoServiceImpl extends BaseServiceImpl implements SarInfoServic
     private OperationDaoI operationDaoI;
 
     @Autowired
+    private OperationFeeDaoI operationFeeDaoI;
+
+    @Autowired
     private SarInfoDaoI sarInfoDaoI;
 
     /**
@@ -54,18 +59,18 @@ public class SarInfoServiceImpl extends BaseServiceImpl implements SarInfoServic
         try {
             Admin web3j = Admin.build(new HttpService(Scenario.RPC));
             logger.info("web3j:"+web3j.toString());
-            Credentials ALICE = WalletUtils.loadCredentials(Scenario.WALLET_PASSWORD, Scenario.ALICE_KEY);
+            Credentials ALICE = WalletUtils.loadCredentials(Scenario.WALLET_PASSWORD, ALICE_KEY);
 
             logger.info("ALICE:"+ALICE.toString());
-            SarTub sar = SarTub.load(Scenario.SAR_CONTRACT_ADDRESS, web3j, ALICE, new DefaultGasProvider());
+            SAR sar = SAR.load(Scenario.SAR_CONTRACT_ADDRESS, web3j, ALICE, new DefaultGasProvider());
 
             //最新区块的前100块开始查询
-            Flowable<SarTub.OperatedEventResponse> operatedEventResponseFlowable = sar.operatedEventFlowable(
+            Flowable<SAR.OperatedEventResponse> operatedEventResponseFlowable = sar.operatedEventFlowable(
                     DefaultBlockParameter.valueOf(getLatestBlock(web3j).subtract(new BigInteger("100"))),
                     DefaultBlockParameterName.LATEST);
-            operatedEventResponseFlowable.blockingIterable().forEach(new Consumer<SarTub.OperatedEventResponse>() {
+            operatedEventResponseFlowable.blockingIterable().forEach(new Consumer<SAR.OperatedEventResponse>() {
                 @Override
-                public void accept(SarTub.OperatedEventResponse event) {
+                public void accept(SAR.OperatedEventResponse event) {
                     Log log = event.log;
                     String from = event.from;
                     int type = event.opType.intValue();
@@ -98,6 +103,56 @@ public class SarInfoServiceImpl extends BaseServiceImpl implements SarInfoServic
                         sarInfoDaoI.saveSarInfo(sar);
                     }
                     logger.info(from + "/" + type + "/" + value);
+                }
+            });
+        }catch (CipherException e){
+            e.printStackTrace();
+        }catch (IOException e){
+            e.printStackTrace();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 开始执行sar合约事件
+     *
+     * @return void
+     **/
+    @Override
+    public void sarFeeEventProcess() {
+        logger.info("***start sarFeeEventProcess***");
+        try {
+            Admin web3j = Admin.build(new HttpService(Scenario.RPC));
+            logger.info("web3j:"+web3j.toString());
+            Credentials ALICE = WalletUtils.loadCredentials(Scenario.WALLET_PASSWORD, ALICE_KEY);
+
+            logger.info("ALICE:"+ALICE.toString());
+            SAR sar = SAR.load(Scenario.SAR_CONTRACT_ADDRESS, web3j, ALICE, new DefaultGasProvider());
+
+            //最新区块的前100块开始查询
+            Flowable<SAR.OperatedfeeEventResponse> operatedEventResponseFlowable = sar.operatedfeeEventFlowable(
+                    DefaultBlockParameter.valueOf(getLatestBlock(web3j).subtract(new BigInteger("100"))),
+                    DefaultBlockParameterName.LATEST);
+            operatedEventResponseFlowable.blockingIterable().forEach(new Consumer<SAR.OperatedfeeEventResponse>() {
+                @Override
+                public void accept(SAR.OperatedfeeEventResponse event) {
+                    Log log = event.log;
+                    String from = event.from;
+                    BigInteger fee = event.fee;
+
+                    OperationFee oper = new OperationFee();
+                    oper.setAddr(from);
+                    oper.setAsset(Scenario.SAR_CONTRACT_ADDRESS);
+                    oper.setValue(Convert.fromWei(fee.toString(), Convert.Unit.ETHER));
+                    oper.setBlockindex(log.getBlockNumber().longValue());
+                    oper.setTxid(log.getTransactionHash());
+                    SarInfo info = sarInfoDaoI.findSarByAddr(from,Scenario.SAR_CONTRACT_ADDRESS);
+                    oper.setSarTxid(info.getSarTxid());
+                    oper.setN(log.getTransactionIndex().intValue());
+                    oper.setTime(getDateFromHash(web3j,log.getBlockHash()));
+                    operationFeeDaoI.saveOperationFee(oper);
+                    logger.info(from + "/" + fee);
                 }
             });
         }catch (CipherException e){

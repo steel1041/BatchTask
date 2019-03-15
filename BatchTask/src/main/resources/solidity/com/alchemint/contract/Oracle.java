@@ -1,9 +1,20 @@
 package com.alchemint.contract;
 
 import io.reactivex.Flowable;
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.concurrent.Callable;
 import org.web3j.abi.EventEncoder;
 import org.web3j.abi.TypeReference;
-import org.web3j.abi.datatypes.*;
+import org.web3j.abi.datatypes.Address;
+import org.web3j.abi.datatypes.Bool;
+import org.web3j.abi.datatypes.Event;
+import org.web3j.abi.datatypes.Function;
+import org.web3j.abi.datatypes.Type;
+import org.web3j.abi.datatypes.Utf8String;
 import org.web3j.abi.datatypes.generated.Uint128;
 import org.web3j.abi.datatypes.generated.Uint256;
 import org.web3j.crypto.Credentials;
@@ -17,13 +28,6 @@ import org.web3j.tuples.generated.Tuple7;
 import org.web3j.tx.Contract;
 import org.web3j.tx.TransactionManager;
 import org.web3j.tx.gas.ContractGasProvider;
-
-import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.concurrent.Callable;
 
 /**
  * <p>Auto generated code.
@@ -84,7 +88,7 @@ public class Oracle extends Contract {
     public RemoteCall<TransactionReceipt> setAuth(String addr) {
         final Function function = new Function(
                 FUNC_SETAUTH, 
-                Arrays.<Type>asList(new Address(addr)),
+                Arrays.<Type>asList(new org.web3j.abi.datatypes.Address(addr)), 
                 Collections.<TypeReference<?>>emptyList());
         return executeRemoteCallTransaction(function);
     }
@@ -92,22 +96,22 @@ public class Oracle extends Contract {
     public RemoteCall<TransactionReceipt> setConfig(String key, BigInteger set) {
         final Function function = new Function(
                 FUNC_SETCONFIG, 
-                Arrays.<Type>asList(new Utf8String(key),
-                new Uint256(set)),
+                Arrays.<Type>asList(new org.web3j.abi.datatypes.Utf8String(key), 
+                new org.web3j.abi.datatypes.generated.Uint256(set)), 
                 Collections.<TypeReference<?>>emptyList());
         return executeRemoteCallTransaction(function);
     }
 
     public RemoteCall<BigInteger> getPrice(String key) {
         final Function function = new Function(FUNC_GETPRICE, 
-                Arrays.<Type>asList(new Utf8String(key)),
+                Arrays.<Type>asList(new org.web3j.abi.datatypes.Utf8String(key)), 
                 Arrays.<TypeReference<?>>asList(new TypeReference<Uint128>() {}));
         return executeRemoteCallSingleValueReturn(function, BigInteger.class);
     }
 
     public RemoteCall<Boolean> auths(String param0) {
         final Function function = new Function(FUNC_AUTHS, 
-                Arrays.<Type>asList(new Address(param0)),
+                Arrays.<Type>asList(new org.web3j.abi.datatypes.Address(param0)), 
                 Arrays.<TypeReference<?>>asList(new TypeReference<Bool>() {}));
         return executeRemoteCallSingleValueReturn(function, Boolean.class);
     }
@@ -150,7 +154,7 @@ public class Oracle extends Contract {
 
     public RemoteCall<BigInteger> getConfig(String key) {
         final Function function = new Function(FUNC_GETCONFIG, 
-                Arrays.<Type>asList(new Utf8String(key)),
+                Arrays.<Type>asList(new org.web3j.abi.datatypes.Utf8String(key)), 
                 Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {}));
         return executeRemoteCallSingleValueReturn(function, BigInteger.class);
     }
@@ -158,7 +162,7 @@ public class Oracle extends Contract {
     public RemoteCall<TransactionReceipt> releaseAuth(String addr) {
         final Function function = new Function(
                 FUNC_RELEASEAUTH, 
-                Arrays.<Type>asList(new Address(addr)),
+                Arrays.<Type>asList(new org.web3j.abi.datatypes.Address(addr)), 
                 Collections.<TypeReference<?>>emptyList());
         return executeRemoteCallTransaction(function);
     }
@@ -166,8 +170,8 @@ public class Oracle extends Contract {
     public RemoteCall<TransactionReceipt> setPrice(String key, BigInteger set) {
         final Function function = new Function(
                 FUNC_SETPRICE, 
-                Arrays.<Type>asList(new Utf8String(key),
-                new Uint128(set)),
+                Arrays.<Type>asList(new org.web3j.abi.datatypes.Utf8String(key), 
+                new org.web3j.abi.datatypes.generated.Uint128(set)), 
                 Collections.<TypeReference<?>>emptyList());
         return executeRemoteCallTransaction(function);
     }
@@ -175,15 +179,15 @@ public class Oracle extends Contract {
     public RemoteCall<TransactionReceipt> transferOwnership(String newOwner) {
         final Function function = new Function(
                 FUNC_TRANSFEROWNERSHIP, 
-                Arrays.<Type>asList(new Address(newOwner)),
+                Arrays.<Type>asList(new org.web3j.abi.datatypes.Address(newOwner)), 
                 Collections.<TypeReference<?>>emptyList());
         return executeRemoteCallTransaction(function);
     }
 
     public List<OracleOperatedEventResponse> getOracleOperatedEvents(TransactionReceipt transactionReceipt) {
-        List<EventValuesWithLog> valueList = extractEventParametersWithLog(ORACLEOPERATED_EVENT, transactionReceipt);
+        List<Contract.EventValuesWithLog> valueList = extractEventParametersWithLog(ORACLEOPERATED_EVENT, transactionReceipt);
         ArrayList<OracleOperatedEventResponse> responses = new ArrayList<OracleOperatedEventResponse>(valueList.size());
-        for (EventValuesWithLog eventValues : valueList) {
+        for (Contract.EventValuesWithLog eventValues : valueList) {
             OracleOperatedEventResponse typedResponse = new OracleOperatedEventResponse();
             typedResponse.log = eventValues.getLog();
             typedResponse.from = (String) eventValues.getIndexedValues().get(0).getValue();
@@ -198,7 +202,7 @@ public class Oracle extends Contract {
         return web3j.ethLogFlowable(filter).map(new io.reactivex.functions.Function<Log, OracleOperatedEventResponse>() {
             @Override
             public OracleOperatedEventResponse apply(Log log) {
-                EventValuesWithLog eventValues = extractEventParametersWithLog(ORACLEOPERATED_EVENT, log);
+                Contract.EventValuesWithLog eventValues = extractEventParametersWithLog(ORACLEOPERATED_EVENT, log);
                 OracleOperatedEventResponse typedResponse = new OracleOperatedEventResponse();
                 typedResponse.log = log;
                 typedResponse.from = (String) eventValues.getIndexedValues().get(0).getValue();

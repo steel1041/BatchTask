@@ -2,15 +2,11 @@ package com.test.service;
 
 import com.alchemint.bo.Operation;
 import com.alchemint.bo.SarInfo;
-import com.alchemint.contract.Oracle;
-import com.alchemint.contract.SDUSDToken;
-import com.alchemint.contract.SETHToken;
+import com.alchemint.contract.SAR;
 import com.alchemint.contract.SarTub;
 import com.alchemint.dao.OperationDaoI;
 import com.alchemint.dao.SarInfoDaoI;
 import io.reactivex.Flowable;
-import org.apache.commons.lang.time.DateFormatUtils;
-import org.apache.commons.lang.time.DateUtils;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.web3j.abi.EventEncoder;
@@ -19,11 +15,9 @@ import org.web3j.abi.TypeReference;
 import org.web3j.abi.datatypes.Address;
 import org.web3j.abi.datatypes.Event;
 import org.web3j.abi.datatypes.Type;
-import org.web3j.abi.datatypes.Utf8String;
 import org.web3j.abi.datatypes.generated.Uint256;
 import org.web3j.protocol.core.DefaultBlockParameter;
 import org.web3j.protocol.core.DefaultBlockParameterName;
-import org.web3j.protocol.core.RemoteCall;
 import org.web3j.protocol.core.Request;
 import org.web3j.protocol.core.methods.request.EthFilter;
 import org.web3j.protocol.core.methods.response.*;
@@ -39,7 +33,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
 
-import static junit.framework.TestCase.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -55,7 +48,7 @@ public class SARContractTest extends Scenario {
 
     @Test
     public void callTest() throws Exception{
-        SarTub sar = SarTub.load(SAR_CONTRACT_ADDRESS, web3j, ALICE, new DefaultGasProvider());
+        SAR sar = SAR.load(SAR_CONTRACT_ADDRESS, web3j, ALICE, new DefaultGasProvider());
         logger.info("off:"+sar.off().send());
 
         //创建SAR
@@ -73,15 +66,15 @@ public class SARContractTest extends Scenario {
         sarInfo(sar);
     }
 
-    private void open(SarTub sar) throws Exception {
+    private void open(SAR sar) throws Exception {
         TransactionReceipt receipt = sar.open().send();
         logger.info("open:"+receipt.toString());
         saveOperation(sar,receipt);
     }
 
-    private void saveOperation(SarTub sar,TransactionReceipt receipt) throws Exception{
-        List<SarTub.OperatedEventResponse> events = sar.getOperatedEvents(receipt);
-        for (SarTub.OperatedEventResponse event:events) {
+    private void saveOperation(SAR sar,TransactionReceipt receipt) throws Exception{
+        List<SAR.OperatedEventResponse> events = sar.getOperatedEvents(receipt);
+        for (SAR.OperatedEventResponse event:events) {
             Operation oper = new Operation();
             oper.setAddr(ALICE.getAddress());
             oper.setAsset(SAR_CONTRACT_ADDRESS);
@@ -96,13 +89,13 @@ public class SARContractTest extends Scenario {
         }
     }
 
-    private void reserve(SarTub sar,BigDecimal mount) throws Exception{
+    private void reserve(SAR sar,BigDecimal mount) throws Exception{
         TransactionReceipt receipt = sar.reserve(Convert.toWei(mount,Convert.Unit.ETHER).toBigInteger()).send();
         logger.info("reserve:"+receipt.toString());
         saveOperation(sar,receipt);
     }
 
-    private void expande(SarTub sar,BigDecimal mount) throws Exception{
+    private void expande(SAR sar,BigDecimal mount) throws Exception{
         //发行SDUSD
         BigInteger exMount = Convert.toWei(mount,Convert.Unit.ETHER).toBigInteger();
         TransactionReceipt receipt = sar.expande(exMount).send();
@@ -110,7 +103,7 @@ public class SARContractTest extends Scenario {
         saveOperation(sar,receipt);
     }
 
-    private void contr(SarTub sar,BigDecimal mount) throws Exception{
+    private void contr(SAR sar,BigDecimal mount) throws Exception{
         //还回SDUSD
         BigInteger contrMount = Convert.toWei(mount,Convert.Unit.ETHER).toBigInteger();
         TransactionReceipt receipt = sar.contr(contrMount).send();
@@ -118,7 +111,7 @@ public class SARContractTest extends Scenario {
         saveOperation(sar,receipt);
     }
 
-    private void sarInfo(SarTub sar) throws Exception{
+    private void sarInfo(SAR sar) throws Exception{
         Tuple7<String, BigInteger, BigInteger, BigInteger, BigInteger, BigInteger, BigInteger> tuple7 = sar.sars(ALICE.getAddress()).send();
         logger.info("owner:"+tuple7.getValue1());
         logger.info("locked:"+Convert.fromWei(tuple7.getValue2().toString(),Convert.Unit.ETHER));

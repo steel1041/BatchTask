@@ -12,4 +12,11 @@ public interface SarInfoServiceI {
      *  @return void
      **/
     void sarEventProcess();
+
+    /**
+     *  开始执行sar合约事件
+     *
+     *  @return void
+     **/
+    void sarFeeEventProcess();
 }

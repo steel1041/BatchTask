@@ -49,7 +49,7 @@ public class OracleServiceImpl extends BaseServiceImpl implements OracleServiceI
         try {
             Admin web3j = Admin.build(new HttpService(Scenario.RPC));
             logger.info("web3j:"+web3j.toString());
-            Credentials ALICE = WalletUtils.loadCredentials(Scenario.WALLET_PASSWORD, Scenario.ALICE_KEY);
+            Credentials ALICE = WalletUtils.loadCredentials(Scenario.WALLET_PASSWORD, ALICE_KEY);
 
             logger.info("ALICE:"+ALICE.toString());
             Oracle oracle = Oracle.load(Scenario.ORACLE_CONTRACT_ADDRESS, web3j, ALICE, new DefaultGasProvider());

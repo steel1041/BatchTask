@@ -1,34 +1,21 @@
 package com.test.service;
 
-import com.alchemint.contract.Oracle;
-import com.alchemint.contract.SETHToken;
+import com.alchemint.contract.SETH;
 import io.reactivex.Flowable;
 import org.junit.Test;
-import org.springframework.format.annotation.DateTimeFormat;
-import org.web3j.abi.EventEncoder;
-import org.web3j.abi.FunctionReturnDecoder;
-import org.web3j.abi.TypeReference;
-import org.web3j.abi.datatypes.Address;
-import org.web3j.abi.datatypes.Event;
-import org.web3j.abi.datatypes.Type;
-import org.web3j.abi.datatypes.Utf8String;
-import org.web3j.abi.datatypes.generated.Uint256;
-import org.web3j.crypto.*;
-import org.web3j.protocol.Web3j;
+import org.web3j.crypto.RawTransaction;
+import org.web3j.crypto.TransactionEncoder;
 import org.web3j.protocol.core.DefaultBlockParameter;
 import org.web3j.protocol.core.DefaultBlockParameterName;
 import org.web3j.protocol.core.RemoteCall;
 import org.web3j.protocol.core.Request;
 import org.web3j.protocol.core.methods.response.*;
-import org.web3j.protocol.http.HttpService;
-import org.web3j.tx.Transfer;
 import org.web3j.tx.gas.DefaultGasProvider;
 import org.web3j.utils.Convert;
 import org.web3j.utils.Numeric;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
-
 import java.util.function.Consumer;
 
 /**
@@ -48,10 +35,10 @@ public class SETHContractTest extends Scenario {
 
     @Test
     public void callTest() throws Exception{
-        SETHToken seth = SETHToken.load(SETH_CONTRACT_ADDRESS, web3j, ALICE, new DefaultGasProvider());
+        SETH seth = SETH.load(SETH_CONTRACT_ADDRESS, web3j, ALICE, new DefaultGasProvider());
 
         //给SETH合约转账
-        transfer(400.00);
+        transfer(200.00);
 
         balanceOf(seth);
 
@@ -62,13 +49,13 @@ public class SETHContractTest extends Scenario {
 
     }
 
-    private void totalSupply(SETHToken seth) throws Exception{
+    private void totalSupply(SETH seth) throws Exception{
         RemoteCall<BigInteger> totalSupplyCall = seth.totalSupply();
         BigInteger totalSupply = totalSupplyCall.send();
         logger.info("totalSupply:"+Convert.fromWei(totalSupply.toString(),Convert.Unit.ETHER).toString());
     }
 
-    private void balanceOf(SETHToken seth) throws Exception{
+    private void balanceOf(SETH seth) throws Exception{
         //SETH余额
         RemoteCall<BigInteger> balanceOfCall = seth.balanceOf(ALICE.getAddress());
         logger.info("balanceOf:"+Convert.fromWei(balanceOfCall.send().toString(),Convert.Unit.ETHER).toString());
@@ -95,7 +82,7 @@ public class SETHContractTest extends Scenario {
         logger.info(ethSendTransaction.getResult());
     }
 
-    private void withdraw(SETHToken seth,double mount) throws Exception{
+    private void withdraw(SETH seth,double mount) throws Exception{
         RemoteCall<TransactionReceipt> withdrawCall = seth.withdraw(Convert.toWei(new BigDecimal(mount),Convert.Unit.ETHER).toBigInteger());
         TransactionReceipt transactionReceipt  =  withdrawCall.send();
         logger.info(transactionReceipt.toString());
@@ -104,7 +91,7 @@ public class SETHContractTest extends Scenario {
     @Test
     public void authSETH() throws Exception{
         //ALICE授权给SAR合约操作金额
-        SETHToken seth = SETHToken.load(SETH_CONTRACT_ADDRESS, web3j, ALICE, new DefaultGasProvider());
+        SETH seth = SETH.load(SETH_CONTRACT_ADDRESS, web3j, ALICE, new DefaultGasProvider());
         TransactionReceipt receipt = seth.approve(SAR_CONTRACT_ADDRESS,Convert.toWei("1000",Convert.Unit.ETHER).toBigInteger()).send();
         logger.info(receipt.toString());
 
@@ -114,14 +101,14 @@ public class SETHContractTest extends Scenario {
 
     @Test
     public void eventLog() throws Exception{
-        SETHToken seth = SETHToken.load(SETH_CONTRACT_ADDRESS, web3j, ALICE, new DefaultGasProvider());
+        SETH seth = SETH.load(SETH_CONTRACT_ADDRESS, web3j, ALICE, new DefaultGasProvider());
 
-        Flowable<SETHToken.DepositEventResponse>  responseFlowable =
+        Flowable<SETH.DepositEventResponse>  responseFlowable =
                 seth.depositEventFlowable(DefaultBlockParameterName.EARLIEST, DefaultBlockParameterName.LATEST);
 
-        responseFlowable.blockingIterable().forEach(new Consumer<SETHToken.DepositEventResponse>() {
+        responseFlowable.blockingIterable().forEach(new Consumer<SETH.DepositEventResponse>() {
             @Override
-            public void accept(SETHToken.DepositEventResponse depositEventResponse) {
+            public void accept(SETH.DepositEventResponse depositEventResponse) {
                 logger.info(depositEventResponse.dst+"/"+depositEventResponse.wad);
 
             }

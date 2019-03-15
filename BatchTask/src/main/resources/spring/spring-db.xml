@@ -1,24 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:aop="http://www.springframework.org/schema/aop"
-       xmlns:tx="http://www.springframework.org/schema/tx"
        xmlns:context="http://www.springframework.org/schema/context"
        xmlns:mongo="http://www.springframework.org/schema/data/mongo"
-       xmlns:task="http://www.springframework.org/schema/task"
-       xsi:schemaLocation="
-          http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
-          http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
-          http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+
+
           http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
-          http://www.springframework.org/schema/data/mongo http://www.springframework.org/schema/data/mongo/spring-mongo.xsd
-          http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-3.0.xsd">
+          http://www.springframework.org/schema/data/mongo http://www.springframework.org/schema/data/mongo/spring-mongo.xsd">
 
 	<context:component-scan base-package="com.alchemint"/>
 
     <context:property-placeholder location="classpath:properties/mongodb.properties"/>
 
-    <mongo:mongo-client host="${alchemint.db.mongo.host}" port="${alchemint.db.mongo.port}" id="mongoClient">
+    <!--<mongo:mongo-client host="${alchemint.db.mongo.host}" port="${alchemint.db.mongo.port}" id="mongoClient">-->
+        <!--<mongo:client-options-->
+                <!--connections-per-host="${alchemint.db.mongo.connectionsPerHost}"-->
+                <!--threads-allowed-to-block-for-connection-multiplier="${alchemint.db.mongo.threadsAllowedToBlockForConnectionMultiplier}"-->
+                <!--connect-timeout="${alchemint.db.mongo.connectTimeout}"-->
+                <!--max-wait-time="${alchemint.db.mongo.maxWaitTime}"-->
+                <!--socket-keep-alive="${alchemint.db.mongo.socketKeepAlive}"-->
+                <!--socket-timeout="${alchemint.db.mongo.socketTimeout}"-->
+                <!--/>-->
+    <!--</mongo:mongo-client>-->
+
+    <mongo:mongo-client  id="mongoClient" replica-set="${alchemint.db.mongo.replicaset}"
+                        credentials="${alchemint.db.mongo.username}:${alchemint.db.mongo.password}@${alchemint.db.mongo.db}">
         <mongo:client-options
                 connections-per-host="${alchemint.db.mongo.connectionsPerHost}"
                 threads-allowed-to-block-for-connection-multiplier="${alchemint.db.mongo.threadsAllowedToBlockForConnectionMultiplier}"
@@ -29,7 +36,7 @@
                 />
     </mongo:mongo-client>
 
-    <mongo:db-factory dbname="alchemint" mongo-ref="mongoClient" id="mongoDbFactory"/>
+    <mongo:db-factory dbname="${alchemint.db.mongo.db}" mongo-ref="mongoClient" id="mongoDbFactory"/>
 
     <bean id="mongoTemplate" class="org.springframework.data.mongodb.core.MongoTemplate">
         <constructor-arg name="mongoDbFactory" ref="mongoDbFactory"/>
