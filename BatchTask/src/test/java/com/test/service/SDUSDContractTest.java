@@ -1,5 +1,6 @@
 package com.test.service;
 
+import com.alchemint.contract.SDUSD;
 import com.alchemint.contract.SDUSDToken;
 import org.junit.Test;
 import org.web3j.protocol.core.RemoteCall;
@@ -7,6 +8,7 @@ import org.web3j.protocol.core.methods.response.TransactionReceipt;
 import org.web3j.tx.gas.DefaultGasProvider;
 import org.web3j.utils.Convert;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 
 /**
@@ -17,7 +19,7 @@ public class SDUSDContractTest extends Scenario {
 
     @Test
     public void callTest() throws Exception{
-        SDUSDToken sdusdToken = SDUSDToken.load(SDUSD_CONTRACT_ADDRESS, web3j, ALICE, new DefaultGasProvider());
+        SDUSD sdusdToken = SDUSD.load(SDUSD_CONTRACT_ADDRESS, web3j, ALICE, new DefaultGasProvider());
 
         RemoteCall<BigInteger> totalSupplyCall = sdusdToken.totalSupply();
         BigInteger totalSupply = totalSupplyCall.send();
@@ -26,9 +28,17 @@ public class SDUSDContractTest extends Scenario {
         //[2]SDUSD余额
         RemoteCall<BigInteger> balanceOfCall = sdusdToken.balanceOf(ALICE.getAddress());
         logger.info(Convert.fromWei(balanceOfCall.send().toString(),Convert.Unit.ETHER).toString());
-
     }
 
+    @Test
+    public void transferTest() throws Exception{
+        SDUSD sdusdToken = SDUSD.load(SDUSD_CONTRACT_ADDRESS, web3j, ALICE, new DefaultGasProvider());
+        String dst = "0x801b653ba6e0292bafc975601d5329b59a375be6";
+        Double mount = 1.00;
+        RemoteCall<TransactionReceipt> remoteCall =  sdusdToken.transfer(dst,Convert.toWei(BigDecimal.valueOf(mount),Convert.Unit.ETHER).toBigInteger());
+        TransactionReceipt receipt = remoteCall.send();
+        logger.info(receipt.toString());
+    }
 
     private void totalSupply(SDUSDToken sdusdToken) throws Exception{
         RemoteCall<BigInteger> totalSupplyCall = sdusdToken.totalSupply();
@@ -45,8 +55,8 @@ public class SDUSDContractTest extends Scenario {
     @Test
     public void authSDUSD() throws Exception{
         //ALICE授权给SAR合约操作金额
-        SDUSDToken sdusdToken = SDUSDToken.load(SDUSD_CONTRACT_ADDRESS, web3j, ALICE, new DefaultGasProvider());
-        TransactionReceipt receipt = sdusdToken.approve(SAR_CONTRACT_ADDRESS,Convert.toWei("1000",Convert.Unit.ETHER).toBigInteger()).send();
+        SDUSD sdusdToken = SDUSD.load(SDUSD_CONTRACT_ADDRESS, web3j, ALICE, new DefaultGasProvider());
+        TransactionReceipt receipt = sdusdToken.approve(SAR_CONTRACT_ADDRESS,Convert.toWei("10000",Convert.Unit.ETHER).toBigInteger()).send();
         logger.info(receipt.toString());
 
         BigInteger allowance = sdusdToken.allowance(ALICE.getAddress(),SAR_CONTRACT_ADDRESS).send();

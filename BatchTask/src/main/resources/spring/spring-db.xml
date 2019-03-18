@@ -4,28 +4,12 @@
        xmlns:context="http://www.springframework.org/schema/context"
        xmlns:mongo="http://www.springframework.org/schema/data/mongo"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
-
-
           http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
           http://www.springframework.org/schema/data/mongo http://www.springframework.org/schema/data/mongo/spring-mongo.xsd">
-
 	<context:component-scan base-package="com.alchemint"/>
+    <context:property-placeholder location="classpath:application.properties"/>
 
-    <context:property-placeholder location="classpath:properties/mongodb.properties"/>
-
-    <!--<mongo:mongo-client host="${alchemint.db.mongo.host}" port="${alchemint.db.mongo.port}" id="mongoClient">-->
-        <!--<mongo:client-options-->
-                <!--connections-per-host="${alchemint.db.mongo.connectionsPerHost}"-->
-                <!--threads-allowed-to-block-for-connection-multiplier="${alchemint.db.mongo.threadsAllowedToBlockForConnectionMultiplier}"-->
-                <!--connect-timeout="${alchemint.db.mongo.connectTimeout}"-->
-                <!--max-wait-time="${alchemint.db.mongo.maxWaitTime}"-->
-                <!--socket-keep-alive="${alchemint.db.mongo.socketKeepAlive}"-->
-                <!--socket-timeout="${alchemint.db.mongo.socketTimeout}"-->
-                <!--/>-->
-    <!--</mongo:mongo-client>-->
-
-    <mongo:mongo-client  id="mongoClient" replica-set="${alchemint.db.mongo.replicaset}"
-                        credentials="${alchemint.db.mongo.username}:${alchemint.db.mongo.password}@${alchemint.db.mongo.db}">
+    <mongo:mongo-client host="${alchemint.db.mongo.host}" port="${alchemint.db.mongo.port}" id="mongoClient">
         <mongo:client-options
                 connections-per-host="${alchemint.db.mongo.connectionsPerHost}"
                 threads-allowed-to-block-for-connection-multiplier="${alchemint.db.mongo.threadsAllowedToBlockForConnectionMultiplier}"
@@ -36,19 +20,21 @@
                 />
     </mongo:mongo-client>
 
+    <!--<mongo:mongo-client  id="mongoClient" replica-set="${alchemint.db.mongo.replicaset}"-->
+                        <!--credentials="${alchemint.db.mongo.username}:${alchemint.db.mongo.password}@${alchemint.db.mongo.db}">-->
+        <!--<mongo:client-options-->
+                <!--connections-per-host="${alchemint.db.mongo.connectionsPerHost}"-->
+                <!--threads-allowed-to-block-for-connection-multiplier="${alchemint.db.mongo.threadsAllowedToBlockForConnectionMultiplier}"-->
+                <!--connect-timeout="${alchemint.db.mongo.connectTimeout}"-->
+                <!--max-wait-time="${alchemint.db.mongo.maxWaitTime}"-->
+                <!--socket-keep-alive="${alchemint.db.mongo.socketKeepAlive}"-->
+                <!--socket-timeout="${alchemint.db.mongo.socketTimeout}"-->
+                <!--/>-->
+    <!--</mongo:mongo-client>-->
+
     <mongo:db-factory dbname="${alchemint.db.mongo.db}" mongo-ref="mongoClient" id="mongoDbFactory"/>
 
     <bean id="mongoTemplate" class="org.springframework.data.mongodb.core.MongoTemplate">
         <constructor-arg name="mongoDbFactory" ref="mongoDbFactory"/>
     </bean>
-
-    <!--进行配置，使用定时器
-        ref : pojo类的名称
-        method : 调用的方式名称
-        cron : cronExpression表达式
-        cron="0/5 * * * * ?"  //表示五秒钟执行一次
-     -->
-    <!--<task:scheduled-tasks>-->
-        <!--<task:scheduled ref="quartzService" method="testQuartz" cron="0/5 * * * * ?"/>-->
-    <!--</task:scheduled-tasks>-->
 </beans>

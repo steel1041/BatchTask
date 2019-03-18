@@ -1,7 +1,6 @@
 package com.alchemint.service.impl;
 
 import com.alchemint.bo.OracleOperation;
-import com.alchemint.constants.Scenario;
 import com.alchemint.contract.Oracle;
 import com.alchemint.dao.OracleOperationDaoI;
 import com.alchemint.service.OracleServiceI;
@@ -47,12 +46,12 @@ public class OracleServiceImpl extends BaseServiceImpl implements OracleServiceI
     public void oracleEventProcess() {
         logger.info("***start oracleEventProcess***");
         try {
-            Admin web3j = Admin.build(new HttpService(Scenario.RPC));
+            Admin web3j = Admin.build(new HttpService(RPC));
             logger.info("web3j:"+web3j.toString());
-            Credentials ALICE = WalletUtils.loadCredentials(Scenario.WALLET_PASSWORD, ALICE_KEY);
+            Credentials ALICE = WalletUtils.loadCredentials(WALLET_PASSWORD, ALICE_KEY);
 
             logger.info("ALICE:"+ALICE.toString());
-            Oracle oracle = Oracle.load(Scenario.ORACLE_CONTRACT_ADDRESS, web3j, ALICE, new DefaultGasProvider());
+            Oracle oracle = Oracle.load(ORACLE_CONTRACT_ADDRESS, web3j, ALICE, new DefaultGasProvider());
 
             Flowable<Oracle.OracleOperatedEventResponse> flowable = oracle.oracleOperatedEventFlowable(
                     DefaultBlockParameter.valueOf(getLatestBlock(web3j).subtract(new BigInteger("100"))),
@@ -67,7 +66,7 @@ public class OracleServiceImpl extends BaseServiceImpl implements OracleServiceI
                     BigInteger value = event.opValue;
                     OracleOperation oper = new OracleOperation();
                     oper.setAddr(from);
-                    oper.setAsset(Scenario.ORACLE_CONTRACT_ADDRESS);
+                    oper.setAsset(ORACLE_CONTRACT_ADDRESS);
                     oper.setKey(key);
                     oper.setValue(new BigDecimal(value));
                     oper.setBlockindex(log.getBlockNumber().longValue());

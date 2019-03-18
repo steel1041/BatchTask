@@ -52,12 +52,12 @@ public class TransferServiceImpl extends BaseServiceImpl implements TransferServ
     public void transSETHEventProcess() {
         logger.info("***start transSETHEventProcess***");
         try {
-            Admin web3j = Admin.build(new HttpService(Scenario.RPC));
+            Admin web3j = Admin.build(new HttpService(RPC));
             logger.info("web3j:"+web3j.toString());
             Credentials ALICE = WalletUtils.loadCredentials(Scenario.WALLET_PASSWORD, ALICE_KEY);
 
             logger.info("ALICE:"+ALICE.toString());
-            SETH seth = SETH.load(Scenario.SETH_CONTRACT_ADDRESS, web3j, ALICE, new DefaultGasProvider());
+            SETH seth = SETH.load(SETH_CONTRACT_ADDRESS, web3j, ALICE, new DefaultGasProvider());
 
             Flowable<SETH.TransferEventResponse> flowable = seth.transferEventFlowable(
                     DefaultBlockParameter.valueOf(getLatestBlock(web3j).subtract(new BigInteger("100"))),
@@ -73,19 +73,16 @@ public class TransferServiceImpl extends BaseServiceImpl implements TransferServ
                     Transfer tran = new Transfer();
                     tran.setFrom(from);
                     tran.setTo(to);
-                    tran.setAsset(Scenario.SETH_CONTRACT_ADDRESS);
+                    tran.setAsset(SETH_CONTRACT_ADDRESS);
                     tran.setValue(Convert.fromWei(value.toString(), Convert.Unit.ETHER));
                     tran.setBlockindex(log.getBlockNumber().longValue());
                     tran.setTxid(log.getTransactionHash());
                     tran.setN(log.getTransactionIndex().intValue());
                     tran.setTime(getDateFromHash(web3j,log.getBlockHash()));
-
                     transferDaoI.saveTransfer(tran);
                     logger.info(from + "/" + to + "/" + value);
                 }
             });
-
-
         }catch (CipherException e){
             e.printStackTrace();
         }catch (IOException e){
@@ -104,12 +101,12 @@ public class TransferServiceImpl extends BaseServiceImpl implements TransferServ
     public void transSDUSDEventProcess() {
         logger.info("***start transSDUSDEventProcess***");
         try {
-            Admin web3j = Admin.build(new HttpService(Scenario.RPC));
+            Admin web3j = Admin.build(new HttpService(RPC));
             logger.info("web3j:"+web3j.toString());
             Credentials ALICE = WalletUtils.loadCredentials(Scenario.WALLET_PASSWORD, ALICE_KEY);
 
             logger.info("ALICE:"+ALICE.toString());
-            SDUSD sdusd = SDUSD.load(Scenario.SDUSD_CONTRACT_ADDRESS, web3j, ALICE, new DefaultGasProvider());
+            SDUSD sdusd = SDUSD.load(SDUSD_CONTRACT_ADDRESS, web3j, ALICE, new DefaultGasProvider());
 
             Flowable<SDUSD.TransferEventResponse> flowable = sdusd.transferEventFlowable(
                     DefaultBlockParameter.valueOf(getLatestBlock(web3j).subtract(new BigInteger("100"))),
@@ -125,7 +122,7 @@ public class TransferServiceImpl extends BaseServiceImpl implements TransferServ
                     Transfer tran = new Transfer();
                     tran.setFrom(from);
                     tran.setTo(to);
-                    tran.setAsset(Scenario.SDUSD_CONTRACT_ADDRESS);
+                    tran.setAsset(SDUSD_CONTRACT_ADDRESS);
                     tran.setValue(Convert.fromWei(value.toString(), Convert.Unit.ETHER));
                     tran.setBlockindex(log.getBlockNumber().longValue());
                     tran.setTxid(log.getTransactionHash());
@@ -156,12 +153,12 @@ public class TransferServiceImpl extends BaseServiceImpl implements TransferServ
     public void approveSETHEventProcess() {
         logger.info("***start approveSETHEventProcess***");
         try {
-            Admin web3j = Admin.build(new HttpService(Scenario.RPC));
+            Admin web3j = Admin.build(new HttpService(RPC));
             logger.info("web3j:"+web3j.toString());
             Credentials ALICE = WalletUtils.loadCredentials(Scenario.WALLET_PASSWORD, ALICE_KEY);
 
             logger.info("ALICE:"+ALICE.toString());
-            SETH seth = SETH.load(Scenario.SETH_CONTRACT_ADDRESS, web3j, ALICE, new DefaultGasProvider());
+            SETH seth = SETH.load(SETH_CONTRACT_ADDRESS, web3j, ALICE, new DefaultGasProvider());
 
             Flowable<SETH.ApprovalEventResponse> flowable = seth.approvalEventFlowable(
                     DefaultBlockParameter.valueOf(getLatestBlock(web3j).subtract(new BigInteger("100"))),
@@ -178,7 +175,7 @@ public class TransferServiceImpl extends BaseServiceImpl implements TransferServ
                     Approval approval = new Approval();
                     approval.setFrom(from);
                     approval.setTo(to);
-                    approval.setAsset(Scenario.SETH_CONTRACT_ADDRESS);
+                    approval.setAsset(SETH_CONTRACT_ADDRESS);
                     approval.setValue(Convert.fromWei(value.toString(), Convert.Unit.ETHER));
                     approval.setBlockindex(log.getBlockNumber().longValue());
                     approval.setTxid(log.getTransactionHash());
@@ -208,12 +205,12 @@ public class TransferServiceImpl extends BaseServiceImpl implements TransferServ
     public void approveSDUSDEventProcess() {
         logger.info("***start approveSDUSDEventProcess***");
         try {
-            Admin web3j = Admin.build(new HttpService(Scenario.RPC));
+            Admin web3j = Admin.build(new HttpService(RPC));
             logger.info("web3j:"+web3j.toString());
-            Credentials ALICE = WalletUtils.loadCredentials(Scenario.WALLET_PASSWORD, ALICE_KEY);
+            Credentials ALICE = WalletUtils.loadCredentials(WALLET_PASSWORD, ALICE_KEY);
 
             logger.info("ALICE:"+ALICE.toString());
-            SDUSD sdusdToken = SDUSD.load(Scenario.SDUSD_CONTRACT_ADDRESS, web3j, ALICE, new DefaultGasProvider());
+            SDUSD sdusdToken = SDUSD.load(SDUSD_CONTRACT_ADDRESS, web3j, ALICE, new DefaultGasProvider());
 
             Flowable<SDUSD.ApprovalEventResponse> flowable = sdusdToken.approvalEventFlowable(
                     DefaultBlockParameter.valueOf(getLatestBlock(web3j).subtract(new BigInteger("100"))),
@@ -230,7 +227,7 @@ public class TransferServiceImpl extends BaseServiceImpl implements TransferServ
                     Approval approval = new Approval();
                     approval.setFrom(from);
                     approval.setTo(to);
-                    approval.setAsset(Scenario.SDUSD_CONTRACT_ADDRESS);
+                    approval.setAsset(SDUSD_CONTRACT_ADDRESS);
                     approval.setValue(Convert.fromWei(value.toString(), Convert.Unit.ETHER));
                     approval.setBlockindex(log.getBlockNumber().longValue());
                     approval.setTxid(log.getTransactionHash());

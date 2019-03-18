@@ -55,24 +55,33 @@ public class SARContractTest extends Scenario {
         //open(sar);
 
         //首先需要授权SAR合约操作SETH,然后进行抵押
-        reserve(sar,new BigDecimal(10.0));
+        //reserve(sar,new BigDecimal(200.0));
 
         //发行稳定币
-        //expande(sar,new BigDecimal(500.0));
+        //expande(sar,new BigDecimal(100.0));
 
-        //contr(sar,new BigDecimal(60.00));
+        //contr(sar,new BigDecimal(20.00));
 
+        //withdraw(sar,new BigDecimal(100.00));
+
+        close(sar);
         //SAR详细信息
         sarInfo(sar);
     }
 
     private void open(SAR sar) throws Exception {
         TransactionReceipt receipt = sar.open().send();
-        logger.info("open:"+receipt.toString());
         saveOperation(sar,receipt);
     }
 
+    private void withdraw(SAR sar,BigDecimal mount) throws Exception {
+        TransactionReceipt receipt = sar.withdraw(Convert.toWei(mount,Convert.Unit.ETHER).toBigInteger()).send();
+        saveOperation(sar,receipt);
+    }
+
+
     private void saveOperation(SAR sar,TransactionReceipt receipt) throws Exception{
+        logger.info(receipt.toString());
         List<SAR.OperatedEventResponse> events = sar.getOperatedEvents(receipt);
         for (SAR.OperatedEventResponse event:events) {
             Operation oper = new Operation();
@@ -91,7 +100,6 @@ public class SARContractTest extends Scenario {
 
     private void reserve(SAR sar,BigDecimal mount) throws Exception{
         TransactionReceipt receipt = sar.reserve(Convert.toWei(mount,Convert.Unit.ETHER).toBigInteger()).send();
-        logger.info("reserve:"+receipt.toString());
         saveOperation(sar,receipt);
     }
 
@@ -99,7 +107,6 @@ public class SARContractTest extends Scenario {
         //发行SDUSD
         BigInteger exMount = Convert.toWei(mount,Convert.Unit.ETHER).toBigInteger();
         TransactionReceipt receipt = sar.expande(exMount).send();
-        logger.info(receipt.toString());
         saveOperation(sar,receipt);
     }
 
@@ -107,7 +114,11 @@ public class SARContractTest extends Scenario {
         //还回SDUSD
         BigInteger contrMount = Convert.toWei(mount,Convert.Unit.ETHER).toBigInteger();
         TransactionReceipt receipt = sar.contr(contrMount).send();
-        logger.info(receipt.toString());
+        saveOperation(sar,receipt);
+    }
+
+    private void close(SAR sar)throws Exception{
+        TransactionReceipt receipt = sar.close().send();
         saveOperation(sar,receipt);
     }
 

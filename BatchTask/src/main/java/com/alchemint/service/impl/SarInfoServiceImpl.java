@@ -57,12 +57,12 @@ public class SarInfoServiceImpl extends BaseServiceImpl implements SarInfoServic
     public void sarEventProcess() {
         logger.info("***start sarEventProcess***");
         try {
-            Admin web3j = Admin.build(new HttpService(Scenario.RPC));
+            Admin web3j = Admin.build(new HttpService(RPC));
             logger.info("web3j:"+web3j.toString());
-            Credentials ALICE = WalletUtils.loadCredentials(Scenario.WALLET_PASSWORD, ALICE_KEY);
+            Credentials ALICE = WalletUtils.loadCredentials(WALLET_PASSWORD, ALICE_KEY);
 
             logger.info("ALICE:"+ALICE.toString());
-            SAR sar = SAR.load(Scenario.SAR_CONTRACT_ADDRESS, web3j, ALICE, new DefaultGasProvider());
+            SAR sar = SAR.load(SAR_CONTRACT_ADDRESS, web3j, ALICE, new DefaultGasProvider());
 
             //最新区块的前100块开始查询
             Flowable<SAR.OperatedEventResponse> operatedEventResponseFlowable = sar.operatedEventFlowable(
@@ -77,7 +77,7 @@ public class SarInfoServiceImpl extends BaseServiceImpl implements SarInfoServic
                     BigInteger value = event.opValue;
                     Operation oper = new Operation();
                     oper.setAddr(from);
-                    oper.setAsset(Scenario.SAR_CONTRACT_ADDRESS);
+                    oper.setAsset(SAR_CONTRACT_ADDRESS);
                     oper.setType(type);
                     oper.setValue(Convert.fromWei(value.toString(), Convert.Unit.ETHER));
                     oper.setBlockindex(log.getBlockNumber().longValue());
@@ -85,7 +85,7 @@ public class SarInfoServiceImpl extends BaseServiceImpl implements SarInfoServic
                     if(type == Constans.OPER_TYPE_OPEN) {
                         oper.setSarTxid(log.getTransactionHash());
                     }else{
-                        SarInfo info = sarInfoDaoI.findSarByAddr(from,Scenario.SAR_CONTRACT_ADDRESS);
+                        SarInfo info = sarInfoDaoI.findSarByAddr(from,SAR_CONTRACT_ADDRESS);
                         oper.setSarTxid(info.getSarTxid());
                     }
                     oper.setN(log.getTransactionIndex().intValue());
@@ -93,7 +93,7 @@ public class SarInfoServiceImpl extends BaseServiceImpl implements SarInfoServic
                     operationDaoI.saveOperation(oper);
                     if (type == Constans.OPER_TYPE_OPEN) {
                         SarInfo sar = new SarInfo();
-                        sar.setAsset(Scenario.SAR_CONTRACT_ADDRESS);
+                        sar.setAsset(SAR_CONTRACT_ADDRESS);
                         sar.setN(log.getTransactionIndex().intValue());
                         sar.setSarTxid(log.getTransactionHash());
                         sar.setAddr(from);
@@ -123,12 +123,12 @@ public class SarInfoServiceImpl extends BaseServiceImpl implements SarInfoServic
     public void sarFeeEventProcess() {
         logger.info("***start sarFeeEventProcess***");
         try {
-            Admin web3j = Admin.build(new HttpService(Scenario.RPC));
+            Admin web3j = Admin.build(new HttpService(RPC));
             logger.info("web3j:"+web3j.toString());
             Credentials ALICE = WalletUtils.loadCredentials(Scenario.WALLET_PASSWORD, ALICE_KEY);
 
             logger.info("ALICE:"+ALICE.toString());
-            SAR sar = SAR.load(Scenario.SAR_CONTRACT_ADDRESS, web3j, ALICE, new DefaultGasProvider());
+            SAR sar = SAR.load(SAR_CONTRACT_ADDRESS, web3j, ALICE, new DefaultGasProvider());
 
             //最新区块的前100块开始查询
             Flowable<SAR.OperatedfeeEventResponse> operatedEventResponseFlowable = sar.operatedfeeEventFlowable(
@@ -143,11 +143,11 @@ public class SarInfoServiceImpl extends BaseServiceImpl implements SarInfoServic
 
                     OperationFee oper = new OperationFee();
                     oper.setAddr(from);
-                    oper.setAsset(Scenario.SAR_CONTRACT_ADDRESS);
+                    oper.setAsset(SAR_CONTRACT_ADDRESS);
                     oper.setValue(Convert.fromWei(fee.toString(), Convert.Unit.ETHER));
                     oper.setBlockindex(log.getBlockNumber().longValue());
                     oper.setTxid(log.getTransactionHash());
-                    SarInfo info = sarInfoDaoI.findSarByAddr(from,Scenario.SAR_CONTRACT_ADDRESS);
+                    SarInfo info = sarInfoDaoI.findSarByAddr(from,SAR_CONTRACT_ADDRESS);
                     oper.setSarTxid(info.getSarTxid());
                     oper.setN(log.getTransactionIndex().intValue());
                     oper.setTime(getDateFromHash(web3j,log.getBlockHash()));

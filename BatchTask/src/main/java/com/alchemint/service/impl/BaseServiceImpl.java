@@ -22,6 +22,26 @@ public abstract class BaseServiceImpl  {
     @Value("${alchemint.wallet.path.alice}")
     public String ALICE_KEY = "";
 
+    @Value("${alchemint.rpc.http.url}")
+    public String RPC = "";
+
+    @Value("${alchemint.rpc.ws.url}")
+    public String RPC_WS = "";
+
+    @Value("${alchemint.hash.contract.oracle}")
+    public String ORACLE_CONTRACT_ADDRESS = "";
+
+    @Value("${alchemint.hash.contract.seth}")
+    public String SETH_CONTRACT_ADDRESS = "";
+
+    @Value("${alchemint.hash.contract.sdusd}")
+    public String SDUSD_CONTRACT_ADDRESS = "";
+
+    @Value("${alchemint.hash.contract.sar}")
+    public String SAR_CONTRACT_ADDRESS = "";
+
+    public String WALLET_PASSWORD = "123456";
+
     public BigInteger getLatestBlock(Admin web3j) throws Exception{
         Request<?, EthBlockNumber> blockNumberRequest = web3j.ethBlockNumber();
         BigInteger blockNumber = blockNumberRequest.send().getBlockNumber();

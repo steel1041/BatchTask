@@ -30,7 +30,7 @@ public class SETHContractTest extends Scenario {
         logger.info("BlockNumber:"+blockNumber.toString());
 
         Request<?, EthGetBalance> balance = web3j.ethGetBalance(SETH_CONTRACT_ADDRESS, DefaultBlockParameter.valueOf(blockNumber));
-        logger.info(Convert.fromWei(balance.send().getBalance().toString(),Convert.Unit.ETHER)+":ETH");
+        logger.info(Convert.fromWei(balance.send().getBalance().toString(),Convert.Unit.ETHER)+" ETH");
     }
 
     @Test
@@ -92,7 +92,7 @@ public class SETHContractTest extends Scenario {
     public void authSETH() throws Exception{
         //ALICE授权给SAR合约操作金额
         SETH seth = SETH.load(SETH_CONTRACT_ADDRESS, web3j, ALICE, new DefaultGasProvider());
-        TransactionReceipt receipt = seth.approve(SAR_CONTRACT_ADDRESS,Convert.toWei("1000",Convert.Unit.ETHER).toBigInteger()).send();
+        TransactionReceipt receipt = seth.approve(SAR_CONTRACT_ADDRESS,Convert.toWei("10000",Convert.Unit.ETHER).toBigInteger()).send();
         logger.info(receipt.toString());
 
         BigInteger allowance = seth.allowance(ALICE.getAddress(),SAR_CONTRACT_ADDRESS).send();

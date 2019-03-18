@@ -14,8 +14,8 @@ public class Scenario{
 
     public final static Logger logger = LoggerFactory.getLogger(Scenario.class);
 
-    public static final String RPC = "http://47.75.103.144:8546/";
-    public static final String RPC_WS = "ws://47.75.103.144:8545/";
+//    public static final String RPC = "http://47.75.103.144:8546/";
+//    public static final String RPC_WS = "ws://47.75.103.144:8545/";
 
     static final BigInteger GAS_PRICE = BigInteger.valueOf(22_000_000_000L);
     static final BigInteger GAS_LIMIT = BigInteger.valueOf(210000);
@@ -31,13 +31,13 @@ public class Scenario{
     WALLET address variable you've defined.
     */
 
-    public static final String ORACLE_CONTRACT_ADDRESS = "0x1ca7ce64a84dd27bbe31f2021e95efa684603444";
-
-    public static final String SETH_CONTRACT_ADDRESS = "0x916b96d20ace37d4ff57f552843f35f61b84e775";
-
-    public static final String SDUSD_CONTRACT_ADDRESS = "0xc805c020502129c6047fc09cc97d75cda1e0d3fa";
-
-    public static final String SAR_CONTRACT_ADDRESS = "0x62273e9ec0da1dd04c882eacb05694a1d9b3aef3";
+//    public static final String ORACLE_CONTRACT_ADDRESS = "0x1ca7ce64a84dd27bbe31f2021e95efa684603444";
+//
+//    public static final String SETH_CONTRACT_ADDRESS = "0x916b96d20ace37d4ff57f552843f35f61b84e775";
+//
+//    public static final String SDUSD_CONTRACT_ADDRESS = "0xc805c020502129c6047fc09cc97d75cda1e0d3fa";
+//
+//    public static final String SAR_CONTRACT_ADDRESS = "0x62273e9ec0da1dd04c882eacb05694a1d9b3aef3";
 
     private static final BigInteger ACCOUNT_UNLOCK_DURATION = BigInteger.valueOf(30);
 

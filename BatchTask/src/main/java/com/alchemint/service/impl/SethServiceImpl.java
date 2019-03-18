@@ -3,10 +3,9 @@ package com.alchemint.service.impl;
 import com.alchemint.bo.CommOperation;
 import com.alchemint.constants.Constans;
 import com.alchemint.constants.Scenario;
-import com.alchemint.contract.SDUSDToken;
+import com.alchemint.contract.SDUSD;
 import com.alchemint.contract.SETH;
 import com.alchemint.dao.CommOperationDaoI;
-import com.alchemint.dao.TransferDaoI;
 import com.alchemint.service.SethServiceI;
 import io.reactivex.Flowable;
 import org.slf4j.Logger;
@@ -38,13 +37,7 @@ public class SethServiceImpl extends BaseServiceImpl implements SethServiceI {
     public final static Logger logger = LoggerFactory.getLogger(SethServiceImpl.class);
 
     @Autowired
-    private TransferDaoI transferDaoI;
-
-    @Autowired
     private CommOperationDaoI operationDaoI;
-
-
-
 
     /**
      * 开始执行seth合约事件
@@ -55,12 +48,12 @@ public class SethServiceImpl extends BaseServiceImpl implements SethServiceI {
     public void depositEventProcess() {
         logger.info("***start depositEventProcess***");
         try {
-            Admin web3j = Admin.build(new HttpService(Scenario.RPC));
+            Admin web3j = Admin.build(new HttpService(RPC));
             logger.info("web3j:"+web3j.toString());
             Credentials ALICE = WalletUtils.loadCredentials(Scenario.WALLET_PASSWORD, ALICE_KEY);
 
             logger.info("ALICE:"+ALICE.toString());
-            SETH seth = SETH.load(Scenario.SETH_CONTRACT_ADDRESS, web3j, ALICE, new DefaultGasProvider());
+            SETH seth = SETH.load(SETH_CONTRACT_ADDRESS, web3j, ALICE, new DefaultGasProvider());
 
             Flowable<SETH.DepositEventResponse> flowable = seth.depositEventFlowable(
                     DefaultBlockParameter.valueOf(getLatestBlock(web3j).subtract(new BigInteger("100"))),
@@ -75,7 +68,7 @@ public class SethServiceImpl extends BaseServiceImpl implements SethServiceI {
                     CommOperation comm = new CommOperation();
                     comm.setFrom(from);
                     comm.setType(Constans.SETH_EVENT_DEPOSIT);
-                    comm.setAsset(Scenario.SETH_CONTRACT_ADDRESS);
+                    comm.setAsset(SETH_CONTRACT_ADDRESS);
                     comm.setValue(Convert.fromWei(value.toString(), Convert.Unit.ETHER));
                     comm.setBlockindex(log.getBlockNumber().longValue());
                     comm.setTxid(log.getTransactionHash());
@@ -105,12 +98,12 @@ public class SethServiceImpl extends BaseServiceImpl implements SethServiceI {
     public void withdrawEventProcess() {
         logger.info("***start withdrawEventProcess***");
         try {
-            Admin web3j = Admin.build(new HttpService(Scenario.RPC));
+            Admin web3j = Admin.build(new HttpService(RPC));
             logger.info("web3j:"+web3j.toString());
             Credentials ALICE = WalletUtils.loadCredentials(Scenario.WALLET_PASSWORD, ALICE_KEY);
 
             logger.info("ALICE:"+ALICE.toString());
-            SETH seth = SETH.load(Scenario.SETH_CONTRACT_ADDRESS, web3j, ALICE, new DefaultGasProvider());
+            SETH seth = SETH.load(SETH_CONTRACT_ADDRESS, web3j, ALICE, new DefaultGasProvider());
 
             Flowable<SETH.WithdrawalEventResponse> flowable = seth.withdrawalEventFlowable(
                     DefaultBlockParameter.valueOf(getLatestBlock(web3j).subtract(new BigInteger("100"))),
@@ -125,7 +118,7 @@ public class SethServiceImpl extends BaseServiceImpl implements SethServiceI {
                     CommOperation comm = new CommOperation();
                     comm.setFrom(from);
                     comm.setType(Constans.SETH_EVENT_WITHDRAW);
-                    comm.setAsset(Scenario.SETH_CONTRACT_ADDRESS);
+                    comm.setAsset(SETH_CONTRACT_ADDRESS);
                     comm.setValue(Convert.fromWei(value.toString(), Convert.Unit.ETHER));
                     comm.setBlockindex(log.getBlockNumber().longValue());
                     comm.setTxid(log.getTransactionHash());
@@ -155,27 +148,27 @@ public class SethServiceImpl extends BaseServiceImpl implements SethServiceI {
     public void mintEventProcess() {
         logger.info("***start mintEventProcess***");
         try {
-            Admin web3j = Admin.build(new HttpService(Scenario.RPC));
+            Admin web3j = Admin.build(new HttpService(RPC));
             logger.info("web3j:"+web3j.toString());
             Credentials ALICE = WalletUtils.loadCredentials(Scenario.WALLET_PASSWORD, ALICE_KEY);
 
             logger.info("ALICE:"+ALICE.toString());
-            SDUSDToken sdusdToken = SDUSDToken.load(Scenario.SDUSD_CONTRACT_ADDRESS, web3j, ALICE, new DefaultGasProvider());
+            SDUSD sdusdToken = SDUSD.load(SDUSD_CONTRACT_ADDRESS, web3j, ALICE, new DefaultGasProvider());
 
-            Flowable<SDUSDToken.MintEventResponse> flowable = sdusdToken.mintEventFlowable(
+            Flowable<SDUSD.MintEventResponse> flowable = sdusdToken.mintEventFlowable(
                     DefaultBlockParameter.valueOf(getLatestBlock(web3j).subtract(new BigInteger("100"))),
                     DefaultBlockParameterName.LATEST);
 
-            flowable.blockingIterable().forEach(new Consumer<SDUSDToken.MintEventResponse>() {
+            flowable.blockingIterable().forEach(new Consumer<SDUSD.MintEventResponse>() {
                 @Override
-                public void accept(SDUSDToken.MintEventResponse event) {
+                public void accept(SDUSD.MintEventResponse event) {
                     Log log = event.log;
                     String from = event.guy;
                     BigInteger value = event.wad;
                     CommOperation comm = new CommOperation();
                     comm.setFrom(from);
                     comm.setType(Constans.SDUSD_EVENT_MINT);
-                    comm.setAsset(Scenario.SDUSD_CONTRACT_ADDRESS);
+                    comm.setAsset(SDUSD_CONTRACT_ADDRESS);
                     comm.setValue(Convert.fromWei(value.toString(), Convert.Unit.ETHER));
                     comm.setBlockindex(log.getBlockNumber().longValue());
                     comm.setTxid(log.getTransactionHash());
@@ -203,27 +196,27 @@ public class SethServiceImpl extends BaseServiceImpl implements SethServiceI {
     public void burnEventProcess() {
         logger.info("***start burnEventProcess***");
         try {
-            Admin web3j = Admin.build(new HttpService(Scenario.RPC));
+            Admin web3j = Admin.build(new HttpService(RPC));
             logger.info("web3j:"+web3j.toString());
-            Credentials ALICE = WalletUtils.loadCredentials(Scenario.WALLET_PASSWORD, ALICE_KEY);
+            Credentials ALICE = WalletUtils.loadCredentials(WALLET_PASSWORD, ALICE_KEY);
 
             logger.info("ALICE:"+ALICE.toString());
-            SDUSDToken sdusdToken = SDUSDToken.load(Scenario.SDUSD_CONTRACT_ADDRESS, web3j, ALICE, new DefaultGasProvider());
+            SDUSD sdusdToken = SDUSD.load(SDUSD_CONTRACT_ADDRESS, web3j, ALICE, new DefaultGasProvider());
 
-            Flowable<SDUSDToken.BurnEventResponse> flowable = sdusdToken.burnEventFlowable(
+            Flowable<SDUSD.BurnEventResponse> flowable = sdusdToken.burnEventFlowable(
                     DefaultBlockParameter.valueOf(getLatestBlock(web3j).subtract(new BigInteger("100"))),
                     DefaultBlockParameterName.LATEST);
 
-            flowable.blockingIterable().forEach(new Consumer<SDUSDToken.BurnEventResponse>() {
+            flowable.blockingIterable().forEach(new Consumer<SDUSD.BurnEventResponse>() {
                 @Override
-                public void accept(SDUSDToken.BurnEventResponse event) {
+                public void accept(SDUSD.BurnEventResponse event) {
                     Log log = event.log;
                     String from = event.guy;
                     BigInteger value = event.wad;
                     CommOperation comm = new CommOperation();
                     comm.setFrom(from);
                     comm.setType(Constans.SDUSD_EVENT_BURN);
-                    comm.setAsset(Scenario.SDUSD_CONTRACT_ADDRESS);
+                    comm.setAsset(SDUSD_CONTRACT_ADDRESS);
                     comm.setValue(Convert.fromWei(value.toString(), Convert.Unit.ETHER));
                     comm.setBlockindex(log.getBlockNumber().longValue());
                     comm.setTxid(log.getTransactionHash());

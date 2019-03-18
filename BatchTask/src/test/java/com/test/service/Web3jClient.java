@@ -144,7 +144,7 @@ public class Web3jClient extends  Scenario {
     @Test
     public void transfer() {
         try {
-            String toAddress  = "0xedebf882b0aef2c32a65e71e62a05da354d324b9";
+            String toAddress  = "0xfd9ecc02152397204b14c9d95de01bf4012a548d";
             unlockAccount();
             TransactionReceipt transactionReceipt = Transfer.sendFunds(
                     web3j,ALICE,toAddress,
@@ -173,7 +173,7 @@ public class Web3jClient extends  Scenario {
             String passwd = "123456";
             String sourceFile = "D:\\walletfile\\keystore\\801b653ba6e0292bafc975601d5329b59a375be6";
             String fromAddress = "0x801b653ba6e0292bafc975601d5329b59a375be6";
-            String toAddress  = "0x8535a293c3481083665a6d51b8df4b1e2c192b6d";
+            String toAddress  = "0xfd9ecc02152397204b14c9d95de01bf4012a548d";
             Credentials credentials = WalletUtils.loadCredentials(passwd,sourceFile);
 
             Request<?, EthGasPrice> gasPriceReq = web3j.ethGasPrice();
@@ -184,7 +184,7 @@ public class Web3jClient extends  Scenario {
                     fromAddress, DefaultBlockParameterName.LATEST).send();
             BigInteger nonce = ethGetTransactionCount.getTransactionCount();
 
-            BigDecimal weiValue = Convert.toWei(BigDecimal.valueOf(2.0), Convert.Unit.ETHER);
+            BigDecimal weiValue = Convert.toWei(BigDecimal.valueOf(200.0), Convert.Unit.ETHER);
             // create our transaction
             RawTransaction rawTransaction  = RawTransaction.createEtherTransaction(
                     nonce,gasPrice, Transfer.GAS_LIMIT,toAddress,weiValue.toBigIntegerExact());
